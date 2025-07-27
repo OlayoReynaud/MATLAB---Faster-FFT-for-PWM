@@ -46,3 +46,5 @@ end
 % num_lobes : Number of harmonic lobes to be calculated
 % num_levels : Number of levels of the PWM signal
 % carrier_phase : Array of size (num_levels - 1) containing the phase of each carrier signal
+
+% First attempt to modify this function from MATLAB.
