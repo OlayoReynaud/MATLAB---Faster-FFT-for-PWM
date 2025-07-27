@@ -141,7 +141,7 @@ for j = 1 : 30 % 30 points are averaged for each of the above evaluations
 
     tic
     % Olayo_spectra = fft_for_pwm(v_mod_Olayo,1,-1,m_f,1,6);
-    Olayo_spectra = pwmfft(v_mod_Olayo,m_f,6,num_levels,carrier_phase_array);
+    Olayo_spectra = pwmfft(v_mod_Olayo,m_f,10,num_levels,carrier_phase_array);
     t_Olayo(cont) = toc;
 
     % Error:
@@ -164,49 +164,6 @@ end
 mf_counter = mf_counter + 1;
 
 end
-%%
-
-m_f = [25,50,100,500,1000];
-
-% colorscale = ["#CC0000","#CC7700","#CCCC00","#77CC00","#00CC00","#00CC77","#00CCCC","#0077CC","#0000CC","#7700CC"];
-colorscale = ["#AA0000","#AAAA00","#00AA00","#00AAAA","#0000AA"];
-
-figure
-
-box on
-grid on
-hold on
-
-for i = 1 : length(m_f)
-    plot(mean_error_Olayo(:,i),mean_time_Olayo(:,i)*1000,'Color',colorscale(i),'Marker','^','LineWidth',1.1,'MarkerFaceColor',colorscale(i));
-end
-
-hold off
-set(gca,'FontName','Times','XScale','log','YScale','log');
-xlabel("Error")
-ylabel("Execution time [ms]")
-xlim([8e-6,0.01])
-ylim([5e-3-3,10])
-legend("$m_f = 25$","$m_f = 50$","$m_f = 100$","$m_f = 400$","$m_f = 1000$",'Interpreter','latex');
-
-figure
-
-box on
-grid on
-hold on
-
-for i = 1 : length(m_f)
-    plot(mean_error_FFT(:,i),mean_time_FFT(:,i)*1000,'Color',colorscale(i),'Marker','^','LineWidth',1.1,'MarkerFaceColor',colorscale(i));
-end
-hold off
-set(gca,'FontName','Times','XScale','log','YScale','log');
-xlabel("Error")
-ylabel("Execution time [ms]")
-xlim([8e-6,0.01])
-ylim([5e-3-3,10])
-legend("$m_f = 25$","$m_f = 50$","$m_f = 100$","$m_f = 400$","$m_f = 1000$",'Interpreter','latex');
-
-
 
 %%
 
@@ -227,8 +184,8 @@ end
 set(gca,'FontName','Times','XScale','log','YScale','log');
 xlabel("Error")
 ylabel("Execution time [ms]")
-xlim([8e-6,0.03])
-ylim([1e-3-3,3])
+xlim([1e-6,2e-2])
+ylim([3e-2,3])
 
 % Legend
 for i_leg1 = 1:length(m_f) % Dummy plots for color legend
