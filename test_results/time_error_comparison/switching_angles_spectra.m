@@ -19,16 +19,12 @@ cont = 0;
 flag = 0;
 
 for k = 2 : length(x) - 1
-
     % Bloque de corrección (para ángulos de conmutación no detectados):
-
     if (v_c(k + 1) < v_c(k)) && (v_c(k - 1) < v_c(k)) || (k == length(x) - 1) % Fin del intervalo de conmutación
-
         if flag == 3
             flag = 0;
             continue
         end
-
         if flag == 2
             alpha(cont + 1) = alpha(cont);
             alpha(cont) = x(k + 1) - 2 * pi/m_f;

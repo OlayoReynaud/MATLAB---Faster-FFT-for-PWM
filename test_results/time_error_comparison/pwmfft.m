@@ -1,9 +1,7 @@
 function PWM_spectra = pwmfft(v_mod,m_f,num_lobes,num_levels,carrier_phase)
-
     N = length(v_mod);
     PWM_spectra = zeros(1,num_lobes * m_f + ceil(N/2));
     f = zeros(1,N);
-
     for m = 0 : num_lobes
         % f calculation:
         if num_levels == 2

@@ -57,41 +57,29 @@ for j = 1 : 30 % 30 points are averaged for each of the above evaluations
     end
 
     % Reference spectra (FFT with very high sampling):
-
-    if mod(num_levels,2) == 0
-    
+    if mod(num_levels,2) == 0    
         for k = 1 : num_levels - 1
             v_c_ref(k,:) = (sawtooth(m_f * (y + carrier_phase_array(k)/m_f),0.5) + 2 * (k - num_levels/2))/(num_levels - 1);
         end    
-    
-    else
-    
+    else    
         for k = 1 : num_levels - 1
             v_c_ref(k,:) = (sawtooth(m_f * (y + carrier_phase_array(k)/m_f),0.5) + 1 + 2 * (k - ceil(num_levels/2)))/(num_levels - 1);
-        end
-    
+        end    
     end
 
-    PWM = zeros(1,length(y));
-    
+    PWM = zeros(1,length(y));    
     for k1 = 1 : length(y)
     
         for k2 = 1 : num_levels - 1       
-            if v_mod_ref(k1) > v_c_ref(k2,k1)
-    
-               PWM(k1) = PWM(k1) + 1/(num_levels - 1); 
-    
+            if v_mod_ref(k1) > v_c_ref(k2,k1)    
+               PWM(k1) = PWM(k1) + 1/(num_levels - 1);     
             end
     
-            if v_mod_ref(k1) < v_c_ref(k2,k1)
-    
-                PWM(k1) = PWM(k1) - 1/(num_levels - 1);
-    
+            if v_mod_ref(k1) < v_c_ref(k2,k1)    
+                PWM(k1) = PWM(k1) - 1/(num_levels - 1);    
             end
-        end
-    
+        end    
     end
-
     FFT_ref_spectra = 1/length(y) * fft(PWM);
 
     % FFT:
