@@ -12,7 +12,6 @@ num_samples_FFT = 2.^[13,14,15,16,17,18];
 
 for m_f = m_f % Different mf values are evaluated
 
-% num_samples_FFT = 2.^(ceil(log2(m_f)) + [4,5,6,7]);
 y = linspace(0,2 * pi * (2^(14+ceil(log2(m_f))) - 1)/(2^(14+ceil(log2(m_f)))),2^(14+ceil(log2(m_f))));
 num_levels = 2;
 v_c_ref = zeros((num_levels - 1),2^(14+ceil(log2(m_f))));
@@ -152,7 +151,6 @@ for j = 1 : 30 % 30 points are averaged for each of the above evaluations
 
 end
 
-% s(mf_counter,i) = scatter(mean(error_Olayo),mean(t_Olayo)*1000,'MarkerEdgeColor',colorscale(mf_counter));
 mean_error_pwmfft(i,mf_counter) = mean(error_pwmfft);
 mean_time_pwmfft(i,mf_counter) = mean(t_pwmfft);
 mean_error_FFT(i,mf_counter) = mean(error_FFT);
