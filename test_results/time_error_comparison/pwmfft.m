@@ -35,7 +35,7 @@ function PWM_spectra = pwmfft(v_mod,m_f,num_lobes,num_levels,carrier_phase)
             end
             if floor(N/2) >= m*m_f
                 PWM_spectra(1 : m*m_f) = PWM_spectra(1 : m*m_f) + F(length(F) - m*m_f + 1 : end);
-                PWM_spectra(2 : ceil(N/2) - m*m_f + 2) = PWM_spectra(2 : ceil(N/2) - m*m_f + 2) + conj(F(N - m*m_f : -1 : ceil(N/2)));
+                PWM_spectra(2 : ceil(N/2) - m*m_f + 2) = PWM_spectra(2 : ceil(N/2) - m*m_f + 2) + conj(F(N - m*m_f : -1 : floor(N/2)));
             else
                 PWM_spectra(m*m_f - floor(N/2) : m*m_f) = PWM_spectra(m*m_f - floor(N/2) : m*m_f) + F(length(F) - floor(N/2) : end);
             end
