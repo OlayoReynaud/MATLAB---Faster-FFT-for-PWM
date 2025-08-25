@@ -18,12 +18,12 @@ for i = 1 : 5e2
     for j = 1 : num_harmonics
         v_mod = v_mod + rand/num_harmonics * sin(j * x + rand * 2 * pi);
     end
-    % Método normal:
+    % Regular method:
     tic
     fft_for_pwm(v_mod,1,-1,m_f,1,5);
     T_regular(i) = toc;
     for num_levels = 2 : 8   
-        % Método generalizado:
+        % General method:
         carrier_phase = zeros(1,num_levels - 1);
         tic
         pwmfft(v_mod,1,-1,m_f,5,num_levels,carrier_phase);
@@ -32,8 +32,8 @@ for i = 1 : 5e2
 
 end
 
-disp("Tiempo del método normal: " + num2str(mean(T_regular)) + " segundos.");
+disp("Regular method execution time: " + num2str(mean(T_regular)) + " s.");
 
 for i = 1 : 7
-    disp("Tiempo del método generalizado (" + num2str(i + 1) + " niveles): " + num2str(mean(T_general(:,i))) + " segundos.");
+    disp("General method execution time (" + num2str(i + 1) + " levels): " + num2str(mean(T_general(:,i))) + " s.");
 end

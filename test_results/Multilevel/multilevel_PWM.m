@@ -1,13 +1,13 @@
-% Parámetros de la modulación multinivel
+% Main parameters:
 
-num_levels = 3; % Número de niveles del inversor
-carrier_phase_array = [0,0,0,0]; % Vector conteniendo la fase de cada una de las portadoras, en grados (rango [-180,180])
-amp_v_mod_spectra = [0,0.7,0,0.3]; % Módulo de los coeficientes del espectro de la señal moduladora (orden ascendiente según el orden, empezando por DC)
-phase_v_mod_spectra = [0,0]; % Fase de los armónicos que componen la señal moduladora
-num_samples = 1e3; % Número de puntos de la señal moduladora
-mf = 50; % Índice de modulación en frecuencia
+num_levels = 3; % Inverter's number of levels
+carrier_phase_array = [0,0,0,0]; % Array containing each carrier phase in degrees ([-180,180] range)
+amp_v_mod_spectra = [0,0.7,0,0.3]; % Amplitude of the modulating signal's spectra (arranged in increasing order, beginning with the DC component)
+phase_v_mod_spectra = [0,0]; % Modulating signal's harmonics angle
+num_samples = 1e3; % Number of points of the modulating signal
+mf = 50; % Frequency modulation index
 
-%% Generación de la señal moduladora:
+%% Modulating signal generation
 
 x = linspace(0,2 * pi * (1 - 1/num_samples),num_samples);
 
@@ -25,7 +25,7 @@ for i = 2 : length(amp_v_mod_spectra)
 
 end
 
-% Se acota su valor al rango [-1,1] para tener en cuenta posible sobremodulación
+% Its value is truncated to the interval [-1,1] to avoid overmodulation:
 
 for i = 1 : num_samples
 
@@ -39,9 +39,9 @@ for i = 1 : num_samples
 
 end
 
-%% Representación gráfica de las señales
+%% Signal plotting
 
-% Generación de señales potadoras:
+% Carrier signal generation:
 
 v_carrier = zeros(2 * num_levels,num_samples);
 
@@ -57,7 +57,7 @@ for i = num_levels + 1 : 2 * num_levels
     v_carrier(i,:) = - v_carrier(i - num_levels,:);
 end
 
-% Generación de la señal PWM:
+% PWM signal generation:
 
 PWM = zeros(1,num_samples);
 
@@ -79,7 +79,7 @@ for i = 1 : num_samples
 
 end
 
-% Figura:
+% Figure:
 
 Fig = figure;
 
@@ -107,7 +107,7 @@ plot(x,PWM,'Color','black')
 
 hold off
 
-%% Cálculo del espectro de la señal PWM mediante FFT
+%% PWM signal's spectra calculation using the FFT
 
 tic
 
@@ -121,11 +121,11 @@ Plot_FFT = plot(abs(PWM_spectra));
 
 hold on
 
-%% Cálculo del espectro de la señal PWM mediante el método de Olayo
+%% PWM signal's spectra calculation using the proposed method
 
-% Se genera una moduladora para cada portadora:
+% A modulating signal is generated for each carrier:
 
-v_mod_Olayo = zeros(num_levels,num_samples);
+v_mod_pwmfft = zeros(num_levels,num_samples);
 
 tic
 
@@ -133,15 +133,15 @@ for i = 1 : num_levels
     for j = 1 : num_samples
         if v_mod(j) > i/num_levels
             
-            v_mod_Olayo(i,j) = 1;
+            v_mod_pwmfft(i,j) = 1;
 
         elseif v_mod(j) < (i - 1)/num_levels
 
-            v_mod_Olayo(i,j) = - 1;
+            v_mod_pwmfft(i,j) = - 1;
 
         else
 
-            v_mod_Olayo(i,j) = 2 * v_mod(j) * num_levels - 2 * i + 1;
+            v_mod_pwmfft(i,j) = 2 * v_mod(j) * num_levels - 2 * i + 1;
 
         end
     end
@@ -151,50 +151,48 @@ for i = num_levels + 1 : 2 * num_levels
     for j = 1 : num_samples
         if v_mod(j) < - (i - num_levels)/num_levels
             
-            v_mod_Olayo(i,j) = - 1;
+            v_mod_pwmfft(i,j) = - 1;
 
         elseif v_mod(j) > - (i - num_levels - 1)/num_levels
 
-            v_mod_Olayo(i,j) = 1;
+            v_mod_pwmfft(i,j) = 1;
 
         else
 
-            v_mod_Olayo(i,j) = 2 * v_mod(j) * num_levels + 2 * (i - num_levels) - 1;
+            v_mod_pwmfft(i,j) = 2 * v_mod(j) * num_levels + 2 * (i - num_levels) - 1;
 
         end
     end
 end
 
-% plot(x,v_mod_Olayo)
+% The proposed method is applied to each modulating-carrier pair:
 
-% Se aplica el método de Olayo a cada par moduladora-portadora:
-
-individual_PWM_spectra_Olayo = zeros(num_levels,num_samples/2);
+individual_PWM_spectra_pwmfft = zeros(num_levels,num_samples/2);
 
 for i = 1 : num_levels
-    individual_PWM_spectra_Olayo(i,:) = fft_for_pwm(v_mod_Olayo(i,:),1/num_levels,0,mf,1,5);
+    individual_PWM_spectra_pwmfft(i,:) = fft_for_pwm(v_mod_pwmfft(i,:),1/num_levels,0,mf,1,5);
 end
 
 for i = num_levels + 1 : 2 * num_levels
-    individual_PWM_spectra_Olayo(i,:) = - fft_for_pwm(- v_mod_Olayo(i,:),0,-1/num_levels,mf,1,5);
+    individual_PWM_spectra_pwmfft(i,:) = - fft_for_pwm(- v_mod_pwmfft(i,:),0,-1/num_levels,mf,1,5);
 end
 
-T_Olayo = toc;
+T_pwmfft = toc;
 
-% Se suman todas las componentes de la PWM resultante
+% The resulting PWM signals are added up:
 
-PWM_spectra_Olayo = sum(individual_PWM_spectra_Olayo);
-PWM_spectra_Olayo(1) = 0;
+PWM_spectra_pwmfft = sum(individual_PWM_spectra_pwmfft);
+PWM_spectra_pwmfft(1) = 0;
 
-% Se grafica sobre el resultado de la FFT:
+% The result is plotted over the previous plot:
 
-plot(0.5 * abs(PWM_spectra_Olayo))
+plot(0.5 * abs(PWM_spectra_pwmfft))
 
 xlim([0,5 * mf])
 ylim([0,0.2])
 box on
 grid on
-legend("FFT","Método de Olayo")
+legend("FFT","Proposed method")
 fontname("Times New Roman")
 
 function pwm_hmncs = fft_for_pwm(vm, V_dc_up, V_dc_low, mf,...

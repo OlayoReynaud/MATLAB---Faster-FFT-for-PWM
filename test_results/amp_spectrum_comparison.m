@@ -98,7 +98,7 @@ else
 end
 
 plot_amp_spectrum(P1(1:output_numb_samples), 1e-3)
-title("Espectro mediante FFT")
+title("Spectra obtained with FFT")
 xlim([1, output_numb_samples]);
 
 if show_time_domain_plots
@@ -108,13 +108,13 @@ else
 end
 
 plot_amp_spectrum(pwm_hmncs, 1e-3)
-title('Espectro mediante FFT simplificada');
+title('Spectra obtain with simplified FFT');
 xlim([1, output_numb_samples]);
 
 if not(show_time_domain_plots)
     subplot(3,1,3)
     plot_amp_spectrum(amp_err, 1e-5)
-    title("Diferencia entre ambos");
+    title("Difference");
     xlim([1, output_numb_samples]);
 end
 
@@ -123,7 +123,7 @@ function plot_mod_and_carr(vm, vc, t)
     yyaxis right
     plot(t, vc, 'linewidth', 0.75);
     ylim([-Vp - 0.5*Vp, Vp + 0.5*Vp])
-    ylabel("Portadora")
+    ylabel("Carrier signal")
 
     % Horizontal lines for amplitude of carrier
     hold on
@@ -133,13 +133,13 @@ function plot_mod_and_carr(vm, vc, t)
 
     yyaxis left
     plot(t, vm, 'linewidth', 1.5);
-    ylabel("Moduladora")
+    ylabel("Modulating signal")
 
-    xlabel('Tiempo');
+    xlabel('Time');
     ylim([-Vp - 0.5*Vp, Vp + 0.5*Vp])
     grid on;
     
-    title('Moduladora y portadora');
+    title('Modulating and carrier signals');
     % legend(["Señal moduladora", "", "", "Señal portadora", "", ""])
     set(gca,'xtick',[]) % Do not plot numbers on x axis
     xlim([0, t(end)])
@@ -156,7 +156,7 @@ function plot_pwm(t, pwm)
 %     set(gca, 'ytick', [V_dc_low, V_dc_up],'yticklabel',...
 %         ["V_{-}"; "V_{+}"])
 
-    xlabel('Tiempo');
+    xlabel('Time');
     title('PWM');
     set(gca,'xtick',[]) % Do not plot numbers on x axis
     ylim([V_dc_low-0.5*V_dc_up, V_dc_up + 0.5*V_dc_up])
@@ -179,8 +179,8 @@ function plot_amp_spectrum(hrmncs, min_for_plot)
             semilogy([h-1, h-1], [min_for_plot, P1(h)], 'b', "lineWidth", 1);
         end
     end
-    xlabel('Número (f/fm)')
-    ylabel('Amplitud')
+    xlabel('Order (f/fm)')
+    ylabel('Amplitude')
     if (max(P1) > min_for_plot)
         ylim([0.9*min_for_plot, 1.2*max(P1)])
     end
